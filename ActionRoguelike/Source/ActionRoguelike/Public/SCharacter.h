@@ -10,43 +10,52 @@
 class UCameraComponent;
 class USpringArmComponent;
 class USInteractionComponent;
+class UAnimMontage;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
-	GENERATED_BODY()
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> ProjectileClass;
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ASCharacter();
+    // Sets default values for this character's properties
+    ASCharacter();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComp;
+    UPROPERTY(EditAnywhere, Category = "Attack")
+    TSubclassOf<AActor> ProjectileClass;
 
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComp;
+    UPROPERTY(EditAnywhere, Category = "Attack")
+    UAnimMontage* AttackAnim;
 
-	UPROPERTY(VisibleAnywhere)
-	USInteractionComponent* InteractionComp;
+protected:
+    UPROPERTY(VisibleAnywhere)
+    USpringArmComponent* SpringArmComp;
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    UPROPERTY(VisibleAnywhere)
+    UCameraComponent* CameraComp;
 
-	void MoveForward(float value);
-	void MoveRight(float value);
-	void PrimaryAttack();
-	void PrimaryInteract();
+    UPROPERTY(VisibleAnywhere)
+    USInteractionComponent* InteractionComp;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    FTimerHandle TimerHandle_PrimaryAttack;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
+
+    void MoveForward(float value);
+    void MoveRight(float value);
+    void PrimaryAttack();
+    void PrimaryAttack_TimeElapsed();
+    void PrimaryInteract();
+
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
+
+    // Called to bind functionality to input
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };
