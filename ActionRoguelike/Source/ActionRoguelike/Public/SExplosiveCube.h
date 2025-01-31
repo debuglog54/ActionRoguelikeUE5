@@ -8,8 +8,7 @@
 #include "SExplosiveCube.generated.h"
 
 class URadialForceComponent;
-class UCubeComponent;
-
+class UStaticMeshComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASExplosiveCube : public AActor
@@ -25,13 +24,13 @@ protected:
 	URadialForceComponent* ForceComp;
 
 	 UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UStaticMeshComponent* CubeMesh;
+    UStaticMeshComponent* MeshComp;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
-    void MyHitCallbackFunction(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+    void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:	
 	// Called every frame

@@ -8,16 +8,21 @@
 ASExplosiveCube::ASExplosiveCube()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.bCanEverTick = true;
+
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
+	MeshComp->SetSimulatePhysics(true);
 
 	ForceComp = CreateDefaultSubobject<URadialForceComponent>("Radial Force Component");
+	ForceComp->SetupAttachment(MeshComp);
+
+	ForceComp->SetAutoActivate(false);
 	ForceComp->Radius = 500.0f;
-	ForceComp->ImpulseStrength = 3000.0f;
+	ForceComp->ImpulseStrength = 2500.0f;
 	ForceComp->bImpulseVelChange = true;
 
-    //CubeMesh->SetSimulatePhysics(true);
-    //CubeMesh->SetNotifyRigidBodyCollision(true);
-	//CubeMesh->OnComponentHit.AddDynamic(this, &ASExplosiveCube::MyHitCallbackFunction);
+	ForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);
+	MeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveCube::OnActorHit);
 }
 
 // Called when the game starts or when spawned
@@ -27,7 +32,7 @@ void ASExplosiveCube::BeginPlay()
 	
 }
 
-void ASExplosiveCube::MyHitCallbackFunction(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASExplosiveCube::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (!OtherActor || !OtherComp) return;
 
@@ -38,6 +43,4 @@ void ASExplosiveCube::MyHitCallbackFunction(UPrimitiveComponent* HitComponent, A
 void ASExplosiveCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-
