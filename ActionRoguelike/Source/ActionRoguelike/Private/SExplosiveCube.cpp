@@ -3,6 +3,7 @@
 
 #include "SExplosiveCube.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ASExplosiveCube::ASExplosiveCube()
@@ -37,6 +38,14 @@ void ASExplosiveCube::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Othe
 	if (!OtherActor || !OtherComp) return;
 
 	ForceComp->FireImpulse();
+
+	// Log, Error, Warning
+	UE_LOG(LogTemp, Log, TEXT("OnActorHit in Explosive Cube"));
+
+	UE_LOG(LogTemp, Warning, TEXT("Other Actor: %s at time %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
+
+	FString CombinedString = FString::Printf(TEXT("Hit at locations: %s"), *Hit.ImpactPoint.ToString());
+	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
 }
 
 // Called every frame
