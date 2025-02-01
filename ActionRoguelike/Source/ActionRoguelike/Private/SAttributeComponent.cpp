@@ -11,6 +11,7 @@ USAttributeComponent::USAttributeComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	Health = 100.0f;
+	MaxHealth = 100.0f;
 }
 
 
@@ -26,6 +27,8 @@ void USAttributeComponent::BeginPlay()
 bool USAttributeComponent::ApplyHealthChange(float Delta)
 {
 	Health += Delta;
+
+	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
 
 	return true;
 }
