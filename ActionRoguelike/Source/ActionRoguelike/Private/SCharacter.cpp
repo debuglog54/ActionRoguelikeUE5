@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
 #include "SInteractionComponent.h"
+#include "SAttributeComponent.h"
 
 
 // Sets default values
@@ -23,6 +24,7 @@ ASCharacter::ASCharacter()
     CameraComp->SetupAttachment(SpringArmComp);
 
     InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComponent");
+    AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 
     GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -58,20 +60,24 @@ void ASCharacter::MoveRight(float value)
 void ASCharacter::PrimaryAttack()
 {
     PlayAnimMontage(AttackAnim);
-    
+
     GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
-   // GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+    // GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
 }
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
-    FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-    FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-    SpawnParams.Instigator = this;
+    // ensure or ensureAlways
+    if (ensure(ProjectileClass))
+    {
+        FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+        FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        SpawnParams.Instigator = this;
 
-    GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+        GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+    }
 }
 
 void ASCharacter::PrimaryInteract()
